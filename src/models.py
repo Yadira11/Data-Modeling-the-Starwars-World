@@ -1,12 +1,13 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from eralchemy import render_er
 
 Base = declarative_base()
+
 class User(Base):
     __tablename__ = "user"
     # Here we define columns for the table person
@@ -16,6 +17,8 @@ class User(Base):
     first_name = Column(String(250), nullable=False)
     last_name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
+    favoritesplanets = relationship("Favoritesplanets")
+    favoritespeople = relationship("Favoritespeople")
 
 class Planets(Base):
     __tablename__ = "planets"
@@ -41,15 +44,19 @@ class People(Base):
     birth_year = Column(Integer)
     url = Column(String(250), nullable=False)
 
-class Favorites(Base):
-    __tablename__ = "Favorites"
+
+class Favoritesplanets(Base):
+    __tablename__ = "favoritesplanets"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
-    planet_name = Column(String(250), ForeignKey('planets.name'))
     planet_id = Column(Integer, ForeignKey('planets.id'))
-    people_name = Column(String(250), ForeignKey('people.name'))
-    people_id = Column(Integer, ForeignKey('people.id'))
+   
 
+class Favoritespeople(Base):
+    __tablename__ = "favoritespeople"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    people_id = Column(Integer, ForeignKey('people.id'))
 
 ## Draw from SQLAlchemy base
 render_er(Base, 'diagram.png')
